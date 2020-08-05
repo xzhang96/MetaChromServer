@@ -3,9 +3,29 @@
     <head>
         <title>MetaChromServer</title>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
         <style>
+            .fa {
+                position: relative;
+                display: inline-block;            
+            }
+            .mybox {
+                visibility: hidden;
+                background-color: black;
+                color: #fff;
+                text-align: center;
+                border-radius: 6px;
 
+                /* Position the tooltip */
+                position: absolute;
+                z-index: 1;
+            }
+            .fa:hover {cursor: pointer;}
+            .mytip:hover > .mybox{
+                visibility: visible;
+            }
         </style>
     </head>
     
@@ -25,6 +45,17 @@
             <!------------------------------ Body ----------------------------------->
             <div class="container" style="margin-top: 20px; width:100%;">
                 <h2>Submit a file for analysis</h2>
+                <hr>
+                <p>
+                    Please select:
+                    <div class="mytip">
+                    <span class="fa fa-question-circle"></span>
+                    <div class="mybox">Text</div>
+                </div>
+                </p>
+                
+                
+                
                 <form action="result.html">
                     <input type="radio" name="fileType" id="seq" onclick="ShowVarSelection()">FASTA<br>
                     <input type="radio" name="fileType" id="var" onclick="ShowVarSelection()">Variant
