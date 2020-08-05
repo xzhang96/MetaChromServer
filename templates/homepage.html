@@ -4,10 +4,16 @@
         <title>MetaChromServer</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.bundle.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
         <style>
+            .fakeimg {
+                background-color: #aaa;
+                width: 100%;
+                height: 300px;
+                padding: 20px;
+            }
             /* Tooltip container */
             .mytooltip {
                 position: relative;
@@ -49,38 +55,57 @@
             </div>
 
             <!------------------------------ Body ----------------------------------->
-            <div class="container" style="margin-top: 20px; width:100%;">
-                <h2>Submit a file for analysis</h2>
-                <hr>
-                <div>
-                    Please select your file type:
-                    <div class="mytooltip fa fa-question-circle">
-                        <span class="mytooltiptext">Tooltip text</span>
+            <div class="container" style="margin-top: 20px;">
+                <div class="row">
+
+                    <!-------------------------- Left Column ------------------------->
+                    <div class="col-sm-3">
+                        <div class="fakeimg"></div>
+                        <br>
+                        <h3>Description</h3>
+                    </div>
+
+                    <!-------------------------- Right Column ------------------------->
+                    <div class="col-sm-9">
+                        <h2>Submit a file for analysis</h2>
+                        <hr>
+                        
+                        <form action="results.html">
+                            <div>
+                                <h4>Please select your file type: 
+                                    <div class="mytooltip fa fa-question-circle">
+                                    <span class="mytooltiptext">Tooltip text</span>
+                                    </div>
+                                </h4>
+                            </div>
+                            <div class="radio"><label for="seq"><input type="radio" name="fileType" id="seq" onclick="ShowVarSelection()">FASTA</label></div>
+                            <div class="radio"><label for="var"><input type="radio" name="fileType" id="var" onclick="ShowVarSelection()">Variant</label></div>
+                            <div class="form-group col-xs-4">
+                                <select class="form-control" id="selectVar" name="selectVar" style="display: none;">
+                                    <option value="">--Please choose an option--</option>
+                                    <option value="VCF">VCF</option>
+                                    <option value="RSID">RSID</option>
+                                </select>
+                            </div>
+                            
+                            <br><br>
+                            <div>
+                                <h4>Please select your input method:</h4>
+                            </div>
+                            <div class="radio"><label><input type="radio" name="inputFile" id="paste" onclick="ShowUploadMethod()">Paste Text</label></div>
+                            <div class="form-group"><textarea id="textInputFile" name="inputFile" rows="10" cols="50" placeholder="Input Text" style="display: none;"></textarea></div>
+                            <div class="radio"><label><input type="radio" name="inputFile" id="upload" onclick="ShowUploadMethod()">File Upload</label></div>
+                            <div class="form-group"><input class="form-control-file" type="file" id="uploadInputFile" name="inputFile" style="display: none;"></div>
+                            <br>
+                            <label for="userEmail">Please enter email for results: </label><br>
+                            <input type="email" id="userEmail" name="userEmail">
+                            <br><br>
+                            <hr>
+                            <button type="submit button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="text">Submit</button>
+                        </form>   
                     </div>
                 </div>
                 
-                <form>
-                    <input type="radio" name="fileType" id="seq" onclick="ShowVarSelection()">FASTA<br>
-                    <input type="radio" name="fileType" id="var" onclick="ShowVarSelection()">Variant
-                    <select id="selectVar" name="selectVar" style="display: none;">
-                        <option value="">--Please choose an option--</option>
-                        <option value="VCF">VCF</option>
-                        <option value="RSID">RSID</option>
-                    </select>
-                    
-                </form>
-                <br><br>
-                <form action="results.html">
-                    <div>
-                        Please select your input method:
-                    </div>
-                    <input type="radio" name="inputFile" id="paste" onclick="ShowUploadMethod()">Paste Text<br>
-                    <input type="radio" name="inputFile" id="upload" onclick="ShowUploadMethod()">File Upload
-                    <textarea id="textInputFile" name="inputFile" rows="10" cols="50" placeholder="Input" style="display: none;"></textarea>
-                    <input type="file" id="uploadInputFile" name="inputFile" style="display: none;"><br>
-                    <br>
-                    <button type="submit button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="text">Submit</button>
-                </form>   
                     
                 <!--------------------------------------- Script ------------------------------------->
                 <script type="text/javascript">
@@ -99,6 +124,9 @@
                     }
                 </script>
             </div>
+        </div>
+        <div class="footer text-center" style="margin-top: 20px; margin-bottom: 0; padding: 10px;">
+            <p>@footer</p>
         </div>
     </body>
 </html>
