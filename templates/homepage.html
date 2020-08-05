@@ -5,25 +5,31 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
         <style>
-            .fa {
+            /* Tooltip container */
+            .mytooltip {
                 position: relative;
-                display: inline-block;            
+                display: inline-block;
             }
-            .mybox {
+            /* Tooltip text */
+            .mytooltip .mytooltiptext {
                 visibility: hidden;
+                width: 120px;
                 background-color: black;
                 color: #fff;
                 text-align: center;
+                padding: 5px 0;
                 border-radius: 6px;
-
-                /* Position the tooltip */
                 position: absolute;
                 z-index: 1;
+                bottom: 100%;
+                left: 50%;
+                margin-left: -60px;
             }
-            .fa:hover {cursor: pointer;}
-            .mytip:hover > .mybox{
+            /* Show the tooltip text when you mouse over the tooltip container */
+            .mytooltip:hover .mytooltiptext {
                 visibility: visible;
             }
         </style>
@@ -46,17 +52,14 @@
             <div class="container" style="margin-top: 20px; width:100%;">
                 <h2>Submit a file for analysis</h2>
                 <hr>
-                <p>
-                    Please select:
-                    <div class="mytip">
-                    <span class="fa fa-question-circle"></span>
-                    <div class="mybox">Text</div>
+                <div>
+                    Please select your file type:
+                    <div class="mytooltip fa fa-question-circle">
+                        <span class="mytooltiptext">Tooltip text</span>
+                    </div>
                 </div>
-                </p>
                 
-                
-                
-                <form action="result.html">
+                <form>
                     <input type="radio" name="fileType" id="seq" onclick="ShowVarSelection()">FASTA<br>
                     <input type="radio" name="fileType" id="var" onclick="ShowVarSelection()">Variant
                     <select id="selectVar" name="selectVar" style="display: none;">
@@ -64,23 +67,38 @@
                         <option value="VCF">VCF</option>
                         <option value="RSID">RSID</option>
                     </select>
-                    <script type="text/javascript">
-                        function ShowVarSelection() {
-                            var variant = document.getElementById("var");
-                            var selectVar = document.getElementById("selectVar");
-                            selectVar.style.display = variant.checked ? "block" : "none";
-                        }
-                    </script>
-                    <br>
-                    <label for="inputFile">File:</label><br>
-                    <textarea id="inputFile" name="inputFile" rows="10" cols="50" placeholder="Input"></textarea>
-                    <br>
-                    <p>Or upload a file:</p>
-                    <input type="file" id="inputFile" name="inputFile"><br>
-                    <button type="submit">Submit</button>
+                    
                 </form>
+                <br><br>
+                <form action="results.html">
+                    <div>
+                        Please select your input method:
+                    </div>
+                    <input type="radio" name="inputFile" id="paste" onclick="ShowUploadMethod()">Paste Text<br>
+                    <input type="radio" name="inputFile" id="upload" onclick="ShowUploadMethod()">File Upload
+                    <textarea id="textInputFile" name="inputFile" rows="10" cols="50" placeholder="Input" style="display: none;"></textarea>
+                    <input type="file" id="uploadInputFile" name="inputFile" style="display: none;"><br>
+                    <br>
+                    <button type="submit button" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="text">Submit</button>
+                </form>   
+                    
+                <!--------------------------------------- Script ------------------------------------->
+                <script type="text/javascript">
+                    function ShowVarSelection() {
+                        var variant = document.getElementById("var");
+                        var selectVar = document.getElementById("selectVar");
+                        selectVar.style.display = variant.checked ? "block" : "none";
+                    }
+                    function ShowUploadMethod() {
+                        var method1 = document.getElementById("paste");
+                        var displayMethod1 = document.getElementById("textInputFile");
+                        displayMethod1.style.display = method1.checked ? "block" : "none";
+                        var method2 = document.getElementById("upload");
+                        var displayMethod2 = document.getElementById("uploadInputFile");
+                        displayMethod2.style.display = method2.checked ? "block" : "none";
+                    }
+                </script>
             </div>
         </div>
-        
     </body>
 </html>
