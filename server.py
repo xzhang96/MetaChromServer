@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import time
+import pathlib
 
 app = Flask(__name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -15,17 +16,24 @@ def index():
 @app.route('/results', methods=['POST'])
 def get_info():
     if request.method == 'POST':
+        t = time.time()
+        jobTitle = request.form['jobTitle']
+        if len(jobTitle) != 0:
+            jobTitle = str(t) + '_' + jobTitle
+        else:
+            jobTitle = str(t) + '_job'
+        new_dir = pathlib.Path(UPLOAD_FOLDER, jobTitle)
+        new_dir.mkdir(parents=True, exist_ok=True)
         fileType = request.form['fileType']
         uploadMethod = request.form['inputFile']
-        t = time.time()
+        
         if uploadMethod == 'file':
             uploadFile = request.files['inputUploadFile']
-            fileName = str(t) + '_' + fileType + '_' + uploadFile.filename
-            uploadFile.save(os.path.join(UPLOAD_FOLDER, secure_filename(fileName)))
+            uploadFile.save(new_dir / 'input.txt')
         elif uploadMethod == 'paste':
             uploadFile = request.form['inputTextFile']
-            fileName = str(t) + '_' + fileType + '_textUpload'
-            print(uploadFile, file=open(os.path.join(UPLOAD_FOLDER, secure_filename(fileName)), 'w'))
+            new_file = new_dir / 'input.txt'
+            new_file.write_text(uploadFile)
 
     return "file upload successfully!"
 
