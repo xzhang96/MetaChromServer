@@ -12,20 +12,22 @@ def index():
     return render_template('homepage.html')
 
 
-@app.route('/results', methods=['GET', 'POST'])
+@app.route('/results', methods=['POST'])
 def get_info():
     if request.method == 'POST':
         fileType = request.form['fileType']
         uploadMethod = request.form['inputFile']
+        t = time.time()
         if uploadMethod == 'file':
             uploadFile = request.files['inputUploadFile']
-            # uploadFile.save(secure_filename(uploadFile.filename))
-            t = time.time()
             fileName = str(t) + '_' + fileType + '_' + uploadFile.filename
-            uploadFile.save(os.path.join(UPLOAD_FOLDER, fileName))
+            uploadFile.save(os.path.join(UPLOAD_FOLDER, secure_filename(fileName)))
+        elif uploadMethod == 'paste':
+            uploadFile = request.form['inputTextFile']
+            fileName = str(t) + '_' + fileType + '_textUpload'
+            print(uploadFile, file=open(os.path.join(UPLOAD_FOLDER, secure_filename(fileName)), 'w'))
 
-
-    return "file uploaded successfully"
+    return "file upload successfully!"
 
 if __name__ == '__main__':
     app.run(debug = True)
