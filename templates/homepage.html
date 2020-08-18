@@ -118,7 +118,7 @@
                                 <select class="form-control" id="selectVar" name="selectVar" style="display: none;">
                                     <option value="">--Please choose an option--</option>
                                     <option value="VCF">VCF</option>
-                                    <option value="RSID">RSID</option>
+                                    <option value="rsid">RSID</option>
                                 </select>
                             </div>
                             
@@ -131,8 +131,10 @@
                             <div class="radio"><label><input type="radio" name="inputFile" id="file" value="file" onclick="ShowUploadMethod()">File Upload</label></div>
                             <div class="form-group"><input class="form-control-file" type="file" accept=".txt" id="uploadInputFile" name="inputUploadFile" style="display: none;"></div>
                             <br>
+                            <label for="jobTitle">Please enter your job title: </label><br>
+                            <input class="form-control col-xs-4" type="text" id="jobTitle" name="jobTitle" placeholder="Optional"><br>
                             <label for="userEmail">Please enter email for results: </label><br>
-                            <input type="email" id="userEmail" name="userEmail">
+                            <input class="form-control col-xs-4" type="email" id="userEmail" name="userEmail" placeholder="Optional">
                             <br><br>
                             <hr>
                             <button type="submit button" class="btn" id="submitBtn">Submit</button>
