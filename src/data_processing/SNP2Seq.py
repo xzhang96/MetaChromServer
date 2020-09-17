@@ -19,6 +19,7 @@ def vcf2bed(vcf_file, OutDir):
     for line in vcf_file:
         num_input += 1
         info = line.strip().split('\t')
+        print(info)
         if len(info) < 5:
             print("Error: Incorrect VCF format")
             exit(1)
