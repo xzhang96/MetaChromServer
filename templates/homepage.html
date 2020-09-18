@@ -7,71 +7,20 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
         <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_sheet.css') }}" media="screen"/>
         <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
         <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
-        <style>
-            body {
-                font-family: 'Open Sans', sans-serif;
-            }
-            .navbar {
-                padding: 8px;
-                background-color: cornflowerblue;
-            }
-            .navbar-brand {
-                font-size: 25px;
-                margin-left: 40px;
-                color: white;
-            }
-            .nav-link {
-                font-size: 20px;
-                color: white;
-            }
-            .fakeimg {
-                background-color: #aaa;
-                width: 100%;
-                height: 200px;
-                padding: 20px;
-            }
-            /* Tooltip container */
-            .mytooltip {
-                position: relative;
-                display: inline-block;
-            }
-            /* Tooltip text */
-            .mytooltip .mytooltiptext {
-                visibility: hidden;
-                width: 120px;
-                background-color: black;
-                color: #fff;
-                text-align: center;
-                padding: 5px 0;
-                border-radius: 6px;
-                position: absolute;
-                z-index: 1;
-                bottom: 100%;
-                left: 50%;
-                margin-left: -60px;
-            }
-            /* Show the tooltip text when you mouse over the tooltip container */
-            .mytooltip:hover .mytooltiptext {
-                visibility: visible;
-            }
-            .btn {
-                background-color: cornflowerblue;
-                color: white;
-            }
-        </style>
     </head>
     
     <body>
         <div class="theme-showcase" role="main">
             <!----------------------------- nav bar ------------------------------->
             <nav class="navbar navbar-expand-sm">
-                <a class="navbar-brand" href=""><b>MetaChrom</b></a>
+                <a class="navbar-brand" href="/"><b>MetaChrom</b></a>
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link" href="">Home</a>
+                        <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Help</a>
@@ -85,7 +34,7 @@
             <!------------------------------ Header -------------------------------->
             <div class="jumbotron text-center" style="margin-bottom: 0px;">
                 <h1 style="font-size: 3vw; font-weight: bold;">MetaChrom Server</h1>
-                <h5>Description</p> 
+                <p style="color: grey"> Last Updated: Sep 2020</p>
             </div>
 
             <!------------------------------ Body ----------------------------------->
@@ -93,27 +42,41 @@
                 <div class="row">
 
                     <!-------------------------- Left Column ------------------------->
-                    <div class="col-sm-3">
-                        <div class="fakeimg"></div>
-                        <br>
-                        <h3>Description</h3>
+                    <div class="col-sm-8">
+                        <p>
+                            MetaChrom is a transfer learning framework that takes advantage of both an extensive compendium of publicly available chromatin profiles data, and epigenomic profiles of cell types related to specific phenotypes of interest. It's capable of predicting the genomic variant effect on epigenomic profiles with single-nucleotide resolution. Please see paper for details.
+                        </p>
+                        <img src="/static/metachrom.jpg" width="750">
+                        <ol type="A">
+                            <li class="caption">
+                                Overall architecture of MetaChrom. The input sequence is fed into both the meta-feature extractor and the ResNet sequence encoder. Their outputs are then concatenated for the prediction of epigenomic profiles.
+                            </li>
+                            <li class="caption">
+                                Pipeline for predicting variant effects on sequence epigenomic profile.
+                            </li>
+                        </ol>
                     </div>
 
+                    <!-- <div class="vl"></div> -->
+
                     <!-------------------------- Right Column ------------------------->
-                    <div class="col-sm-9">
-                        <h2>Submit a file for analysis</h2>
-                        <hr>
-                        
-                        <form action="/results" method="POST" onsubmit="return validate()" enctype="multipart/form-data">
+                    <div class="col-sm-4" style="border-left: #eee solid; border-width: 1px;">
+                            {% if error %}
+                                <p class="error"><strong>Error:</strong> {{ error }}
+                            {% endif %}
+                        <div style="font-size: 22px;">Submit a file for analysis</div>
+                        <hr style="margin-top: 2px; margin-bottom: 10px;">
+                        <!------------------------------------------ Form ---------------------------------------------->
+                        <form class="myform" action="{{ url_for('get_info') }}" method="POST" onsubmit="return validate()" enctype="multipart/form-data">
                             <div>
-                                <h5>Please select your file type: 
-                                    <div class="mytooltip fa fa-question-circle">
+                                <div class="myprompt">Please select your file type: 
+                                    <div class="mytooltip fa fa-question-circle" style="display: inline-block;">
                                     <span class="mytooltiptext">Tooltip text</span>
                                     </div>
-                                </h5>
+                                </div>
                             </div>
-                            <div class="radio"><label for="seq"><input type="radio" name="fileType" value="seq" id="seq" onclick="ShowVarSelection()">FASTA</label></div>
-                            <div class="radio"><label for="var"><input type="radio" name="fileType" value="var" id="var" onclick="ShowVarSelection()">Variant</label></div>
+                            <div class="radio"><label for="seq"><input type="radio" name="fileType" value="seq" id="seq" onclick="ShowVarSelection()"> FASTA</label></div>
+                            <div class="radio"><label for="var"><input type="radio" name="fileType" value="var" id="var" onclick="ShowVarSelection()"> Variant</label></div>
                             <div class="form-group col-xs-4">
                                 <select class="form-control" id="selectVar" name="selectVar" style="display: none;">
                                     <option value="">--Please choose an option--</option>
@@ -121,24 +84,21 @@
                                     <option value="rsid">RSID</option>
                                 </select>
                             </div>
-                            
-                            <br><br>
-                            <div>
-                                <h5>Please select your upload method:</h5>
+                            <div class="myprompt">
+                                Please select your upload method:
                             </div>
-                            <div class="radio"><label><input type="radio" name="inputFile" value="paste" id="paste" onclick="ShowUploadMethod()">Paste Text</label></div>
-                            <div class="form-group"><textarea id="textInputFile" name="inputTextFile" rows="10" cols="50" placeholder="Input Text" style="display: none;"></textarea></div>
-                            <div class="radio"><label><input type="radio" name="inputFile" id="file" value="file" onclick="ShowUploadMethod()">File Upload</label></div>
-                            <div class="form-group"><input class="form-control-file" type="file" accept=".txt" id="uploadInputFile" name="inputUploadFile" style="display: none;"></div>
-                            <br>
-                            <label for="jobTitle">Please enter your job title: </label><br>
+                            <div class="radio"><label><input type="radio" name="inputFile" value="paste" id="paste" onclick="ShowUploadMethod()"> Paste Text</label></div>
+                            <div><textarea id="textInputFile" name="inputTextFile" rows="10" cols="50" placeholder="Input Text" style="display: none;"></textarea></div>
+                            <div class="radio"><label><input type="radio" name="inputFile" id="file" value="file" onclick="ShowUploadMethod()"> File Upload</label></div>
+                            <div class="form-group"><input class="form-control-file" type="file" id="uploadInputFile" name="inputUploadFile" style="display: none;"></div>
+                            <label for="jobTitle" class="myprompt">Please enter your job title: </label><br>
                             <input class="form-control col-xs-4" type="text" id="jobTitle" name="jobTitle" placeholder="Optional"><br>
-                            <label for="userEmail">Please enter email for results: </label><br>
+                            <label for="userEmail" class="myprompt">Please enter email for results: </label><br>
                             <input class="form-control col-xs-4" type="email" id="userEmail" name="userEmail" placeholder="Optional">
-                            <br><br>
                             <hr>
                             <button type="submit button" class="btn" id="submitBtn">Submit</button>
-                        </form>   
+                            <div class="loader" style="display: none;" id="myloader"></div>
+                        </form>
                     </div>
                 </div>
             </div>

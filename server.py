@@ -54,7 +54,7 @@ def get_info():
                     return render_template('homepage.html', error=error)
             elif uploadMethod == 'paste':
                 uploadFile = request.form['inputTextFile']
-                if validate_paste_text(uploadFile):
+                if validate_paste_text(uploadFile, request.form['selectVar']):
                     new_dir.mkdir(parents=True, exist_ok=True)
                     new_file = new_dir / 'input.txt'
                     new_file.write_text(uploadFile)
@@ -81,8 +81,6 @@ def process_var_data(job_title, var_file_type, itm_dir, result_dir):
                     job_title + '/out.vseq --OutDir ' + str(result_dir) +
                     ' --NumTarget 31')
     os.system(inferCommand)
-    # cleanupCommand = 'rm -R ' + itm_dir
-    # os.system(cleanupCommand)
 
 
 def validate_paste_text(input, input_type):
@@ -100,6 +98,7 @@ def validate_paste_text(input, input_type):
 
 @app.route('/result')
 def get_result(job_title):
+    # job_title = '1600380155.8117108_job'
     result_path = os.path.join(RESULT_FOLDER, job_title)
     input_path = os.path.join(UPLOAD_FOLDER, job_title)
     result = torch.load(str(result_path)+'/results.pt')
@@ -125,10 +124,12 @@ def get_result(job_title):
         unmatch_file = open(os.path.join(input_path, 'unmatch.txt'), 'r')
         for line in unmatch_file:
             unmatch.append(line.strip())
+
+    cleanupCommand = 'rm -R ' + input_path
+    os.system(cleanupCommand)
     return render_template('result.html', result=content,
                            cell_type=cell_type_31, unmatch=unmatch)
 
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
-    # get_result('results/1600361646.023559_four/results.pt')
