@@ -11,10 +11,15 @@ function ShowUploadMethod() {
     var displayMethod2 = document.getElementById("uploadInputFile");
     displayMethod2.style.display = method2.checked ? "block" : "none";
 }
+function ShowLoader() {
+    var loader = document.getElementById("myloader");
+    loader.style.display = "inline-block";
+}
 function validate() {
     if (document.getElementById("seq").checked || (document.getElementById("var").checked && document.getElementById("selectVar").value != '')) {
         if (document.getElementById("paste").checked) {
             if (document.getElementById("textInputFile").value != '') {
+                ShowLoader();
                 return true;
             } else {
                 alert("input valid text")
@@ -26,6 +31,7 @@ function validate() {
                 alert("no file selected");
                 return false;
             } else {
+                ShowLoader();
                 return true;
             }
         } else {
