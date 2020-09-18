@@ -23,49 +23,52 @@ def index():
 
 @app.route('/result', methods=['POST'])
 def get_info():
-    if request.method == 'POST':
-        t = time.time()
-        error = None
-        jobTitle = request.form['jobTitle']
-        fileType = request.form['fileType']
-        uploadMethod = request.form['inputFile']
+    t = time.time()
+    error = None
+    jobTitle = request.form['jobTitle']
+    fileType = request.form['fileType']
+    uploadMethod = request.form['inputFile']
 
-        if len(jobTitle) != 0:
-            jobTitle = str(t) + '_' + jobTitle
-        else:
-            jobTitle = str(t) + '_job'
-        new_dir = pathlib.Path(UPLOAD_FOLDER, jobTitle)
+    if len(jobTitle) != 0:
+        jobTitle = str(t) + '_' + jobTitle
+    else:
+        jobTitle = str(t) + '_job'
+    new_dir = pathlib.Path(UPLOAD_FOLDER, jobTitle)
 
-        if fileType == 'var':
-            if uploadMethod == 'file':
-                uploadFile = request.files['inputUploadFile']
-                filename = secure_filename(uploadFile.filename)
-                if filename != "":
-                    file_ext = os.path.splitext(filename)[1]
-                    if file_ext not in app.config['UPLOAD_EXT']:
-                        error = "File type not allowed!"
-                        return render_template('homepage.html', error=error)
-                    else:
-                        new_dir.mkdir(parents=True, exist_ok=True)
-                        uploadFile.save(new_dir / 'input.txt')
-                        # return render_template('loader.html')
-                else:
-                    error = "Upload file not found!"
+    # Input file is variant data
+    if fileType == 'var':
+        if uploadMethod == 'file':
+            uploadFile = request.files['inputUploadFile']
+            filename = secure_filename(uploadFile.filename)
+            if filename != "":
+                file_ext = os.path.splitext(filename)[1]
+                if file_ext not in app.config['UPLOAD_EXT']:
+                    error = "File type not allowed!"
                     return render_template('homepage.html', error=error)
-            elif uploadMethod == 'paste':
-                uploadFile = request.form['inputTextFile']
-                if validate_paste_text(uploadFile, request.form['selectVar']):
+                else:
                     new_dir.mkdir(parents=True, exist_ok=True)
-                    new_file = new_dir / 'input.txt'
-                    new_file.write_text(uploadFile)
-                    # return render_template('loader.html')
-                else:
-                    error = "Paste text format error"
-                    return render_template('homepage.html', error=error)
-        
-            result_dir = pathlib.Path(RESULT_FOLDER, jobTitle)
-            # render_template('loader.html')
-            process_var_data(jobTitle, request.form['selectVar'], str(new_dir), result_dir)
+                    uploadFile.save(new_dir / 'input.txt')
+            else:
+                error = "Upload file not found!"
+                return render_template('homepage.html', error=error)
+        elif uploadMethod == 'paste':
+            uploadFile = request.form['inputTextFile']
+            if validate_var_paste_text(uploadFile, request.form['selectVar']):
+                new_dir.mkdir(parents=True, exist_ok=True)
+                new_file = new_dir / 'input.txt'
+                new_file.write_text(uploadFile)
+            else:
+                error = "Paste text format error"
+                return render_template('homepage.html', error=error)
+        result_dir = pathlib.Path(RESULT_FOLDER, jobTitle)
+        # render_template('loader.html')
+        status = process_var_data(jobTitle, request.form['selectVar'], str(new_dir), result_dir)
+        if status != None:
+            return render_template('homepage.html', error=status)
+
+    # Input file is FASTA file
+    elif fileType == 'seq':
+        pass
     return get_result(jobTitle)
 
 
@@ -74,26 +77,34 @@ def process_var_data(job_title, var_file_type, itm_dir, result_dir):
                  var_file_type + ' --InputFile inputData/' +
                  job_title + '/input.txt --OutDir ' + itm_dir +
                  ' --ToolDir tools/')
-    os.system(dpCommand)
+    dp_status = os.system(dpCommand)
+    if (dp_status != 0):
+        return "Detect error when processing input data!"
     result_dir.mkdir(parents=True, exist_ok=True)
     inferCommand = ('python3 src/infer_var.py --Model trained_model/' +
                     'MetaChrom/MetaFeat_ResNet --InputFile inputData/' +
                     job_title + '/out.vseq --OutDir ' + str(result_dir) +
                     ' --NumTarget 31')
-    os.system(inferCommand)
+    infer_status = os.system(inferCommand)
+    if (infer_status != 0):
+        return "Detect error when running inference!"
+    
+    return
 
 
-def validate_paste_text(input, input_type):
-    if input_type == 'var':
-        if len(input) == 0:
+def validate_var_paste_text(input, var_type):
+    if len(input) == 0:
+        return False
+    else:
+        ls = input.strip().split('\n')
+        if var_type == 'VCF':
+            for var in ls:
+                return len(var.split('\t')) == 5
+        elif var_type == 'rsid':
+            for var in ls:
+                return var[:2].lower() == 'rs' and len(var.split()) == 1
+        else:
             return False
-        ls = input.split('\n')
-        for var in ls:
-            var_elem = var.split('\t')
-            if len(var_elem) != 5:
-                return False
-        return True
-    return True
 
 
 @app.route('/result')

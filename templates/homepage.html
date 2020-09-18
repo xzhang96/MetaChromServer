@@ -33,12 +33,12 @@
 
             <!------------------------------ Header -------------------------------->
             <div class="jumbotron text-center" style="margin-bottom: 0px;">
-                <h1 style="font-size: 3vw; font-weight: bold;">MetaChrom Server</h1>
+                <h1 style="font-size: 3vw; font-weight: bold;">MetaChrom</h1>
                 <p style="color: grey"> Last Updated: Sep 2020</p>
             </div>
 
             <!------------------------------ Body ----------------------------------->
-            <div class="container" style="margin-top: 20px;">
+            <div style="margin-top: 20px; margin-left: 120px; margin-right: 100px;">
                 <div class="row">
 
                     <!-------------------------- Left Column ------------------------->
@@ -46,7 +46,7 @@
                         <p>
                             MetaChrom is a transfer learning framework that takes advantage of both an extensive compendium of publicly available chromatin profiles data, and epigenomic profiles of cell types related to specific phenotypes of interest. It's capable of predicting the genomic variant effect on epigenomic profiles with single-nucleotide resolution. Please see paper for details.
                         </p>
-                        <img src="/static/metachrom.jpg" width="750">
+                        <img src="/static/MetaChrom.png" class="img-fluid float-left">
                         <ol type="A">
                             <li class="caption">
                                 Overall architecture of MetaChrom. The input sequence is fed into both the meta-feature extractor and the ResNet sequence encoder. Their outputs are then concatenated for the prediction of epigenomic profiles.
@@ -57,12 +57,12 @@
                         </ol>
                     </div>
 
-                    <!-- <div class="vl"></div> -->
+                    <div class="col-sm-1 vl"></div>
 
                     <!-------------------------- Right Column ------------------------->
-                    <div class="col-sm-4" style="border-left: #eee solid; border-width: 1px;">
+                    <div class="col-sm-3">
                             {% if error %}
-                                <p class="error"><strong>Error:</strong> {{ error }}
+                                <p class="alert alert-danger"><strong>Error:</strong> {{ error }}
                             {% endif %}
                         <div style="font-size: 22px;">Submit a file for analysis</div>
                         <hr style="margin-top: 2px; margin-bottom: 10px;">

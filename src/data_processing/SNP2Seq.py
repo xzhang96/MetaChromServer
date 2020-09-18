@@ -46,9 +46,9 @@ def rsid2bed(rsid_file, OutDir):
     num_out = 0
     for line in rsid_file:
         num_input += 1
-        if line[:2] != 'rs':
+        if line[:2].lower() != 'rs':
             print("Error: Please input valid rsid")
-        info = mv.query(line, assembly = 'hg38')
+        info = mv.query(line, assembly='hg38')
         if len(info['hits']) == 0:
             continue
         chrom = info['hits'][0]['chrom']
