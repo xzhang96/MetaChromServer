@@ -33,7 +33,7 @@ def vcf2bed(vcf_file, OutDir):
             continue
         begin = int(int(pos) - window_size/2)
         end = int(int(pos) + window_size/2)
-        bed_file.write(chrom + '\t' + str(begin) + '\t' + str(end) + '\t' +  id + ';' + ref + ';' + alt + '\n')
+        bed_file.write(chrom + '\t' + str(begin) + '\t' + str(end) + '\t' + id + ';' + ref + ';' + alt + ';' + chrom + ';' + pos + '\n')
         num_out += 1
     return num_input, num_out
 
@@ -59,7 +59,8 @@ def rsid2bed(rsid_file, OutDir):
 
         begin = int(int(pos) - window_size/2)
         end = int(int(pos) + window_size/2)
-        bed_file.write('chr' + chrom + '\t' + str(begin) + '\t' + str(end) + '\t' +  id + ';' + ref + ';' + alt + '\n')
+        bed_file.write('chr' + chrom + '\t' + str(begin) + '\t' + str(end) +
+                       '\t' + id + ';' + ref + ';' + alt + ';' + chrom + ';' + pos + '\n')
         num_out += 1
     return num_input, num_out
 
@@ -67,6 +68,7 @@ def bed2seq(OutDir, ToolDir):
     bed_file = os.path.join(OutDir, 'tmp.bed')
     fasta_file = os.path.join(OutDir, 'tmp.fasta')
     seq_file = open(os.path.join(OutDir, 'out.vseq'), 'w')
+    unmatch = open(os.path.join(OutDir, 'unmatch.txt'), 'w')
     twobit_path = os.path.join(ToolDir, 'twoBitToFa')
     ref_path = os.path.join(ToolDir, 'hg38.2bit')
     window_size = 1000
@@ -76,12 +78,16 @@ def bed2seq(OutDir, ToolDir):
     os.system(cmd)
 
     for record in SeqIO.parse(fasta_file, 'fasta'):
+        ref = record.id.split(';')[1]
         ref_seq = str(record.seq)
-        alt_seq = list(str(record.seq))
-        alt = record.id.split(';')[2]
-        alt_seq[int(window_size/2 - 1)] = alt
-        alt_seq = ''.join(alt_seq)
-        seq_file.write(record.id + '\t' + ref_seq + '\t' + alt_seq + '\n')
+        if ref_seq[int(window_size/2 - 1)] == ref:
+            alt_seq = list(str(record.seq))
+            alt = record.id.split(';')[2]
+            alt_seq[int(window_size/2 - 1)] = alt
+            alt_seq = ''.join(alt_seq)
+            seq_file.write(record.id + '\t' + ref_seq + '\t' + alt_seq + '\n')
+        else:
+            unmatch.write(record.id)
 
     return
 
