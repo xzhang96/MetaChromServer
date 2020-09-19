@@ -4,13 +4,20 @@
         <title>MetaChromServer</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css">
-        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_sheet.css') }}" media="screen"/>
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/dataTables.bootstrap4.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+        
+        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+        <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.10.22/js/dataTables.bootstrap4.min.js"></script>
+        
         <script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style_sheet.css') }}" media="screen"/>
+
+        <style>
+            
+        </style>
     </head>
     <body>
         <div class="theme-showcase" role="main">
@@ -30,8 +37,8 @@
                 </ul>
             </nav>
 
-            <div class="container" style="margin-top: 20px;">
-                <h3>Variant effect (abs_diff):</h3>
+            <div style="margin-top: 20px; margin-left: 120px; margin-right: 120px;">
+                <div style="font-size: 20px;">Variant effect (abs_diff):</div>
                 {% if unmatch|length %}
                     <div class="alert alert-danger">
                     <h6><strong>Unmatched input:</strong></h6>
@@ -41,8 +48,8 @@
                     </div>
                 {% endif %}
                 <br>
-                <div style="overflow-x: auto;">
-                <table class="table">
+                <div class="table-responsive">
+                <table id="result" class="table table-hover" style="width: 100%;">
                     <thead>
                     <tr>
                         <th>id</th>

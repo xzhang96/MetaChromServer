@@ -55,7 +55,7 @@ def rsid2bed(rsid_file, OutDir):
         pos = info['hits'][0]['vcf']['position']
         ref = info['hits'][0]['vcf']['ref']
         alt = info['hits'][0]['vcf']['alt']
-        id  = line.strip()
+        id  = line.strip().lower()
 
         begin = int(int(pos) - window_size/2)
         end = int(int(pos) + window_size/2)
