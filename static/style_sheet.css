@@ -66,18 +66,36 @@ body {
     font-size: 13px;
 }
 .vl {
-    border-left: 1px solid;
-    height: 500px;
+    border-right: 1px solid;
+    border-color: lightgrey;
 }
 table {
     width: 100%;
-    text-align: center;
-}
-table th {
-    padding: 5px;
+    text-align: right;
 }
 table td {
-    padding-left: 5px;
-    padding-right: 5px;
     white-space: nowrap;
+}
+table.dataTable thead .sorting::after,
+table.dataTable thead .sorting::before,
+table.dataTable thead .sorting_asc::after,
+table.dataTable thead .sorting_asc::before,
+table.dataTable thead .sorting_desc::after,
+table.dataTable thead .sorting_desc::before {
+    display: none;
+}
+table.dataTable thead .sorting {
+   background-image: url(https://datatables.net/media/images/sort_both.png);
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+table.dataTable thead .sorting_asc {
+   background-image: url(https://datatables.net/media/images/sort_asc.png);
+   background-repeat: no-repeat;
+   background-position: center right;
+}
+table.dataTable thead .sorting_desc {
+   background-image: url(https://datatables.net/media/images/sort_desc.png);
+   background-repeat: no-repeat;
+   background-position: center right;
 }

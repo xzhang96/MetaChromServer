@@ -43,3 +43,6 @@ function validate() {
         return false;
     }
 }
+$(document).ready(function() {
+    $('#result').DataTable();
+} );
