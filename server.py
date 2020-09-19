@@ -62,8 +62,9 @@ def get_info():
                 return render_template('homepage.html', error=error)
         result_dir = pathlib.Path(RESULT_FOLDER, jobTitle)
         # render_template('loader.html')
-        status = process_var_data(jobTitle, request.form['selectVar'], str(new_dir), result_dir)
-        if status != None:
+        status = process_var_data(jobTitle, request.form['selectVar'],
+                                  str(new_dir), result_dir)
+        if status is not None:
             return render_template('homepage.html', error=status)
 
     # Input file is FASTA file
@@ -88,7 +89,7 @@ def process_var_data(job_title, var_file_type, itm_dir, result_dir):
     infer_status = os.system(inferCommand)
     if (infer_status != 0):
         return "Detect error when running inference!"
-    
+
     return
 
 
@@ -108,20 +109,21 @@ def validate_var_paste_text(input, var_type):
 
 
 @app.route('/result')
-def get_result(job_title):
-    # job_title = '1600380155.8117108_job'
+def get_result():
+    job_title = '1600408821.0151312_three'
     result_path = os.path.join(RESULT_FOLDER, job_title)
     input_path = os.path.join(UPLOAD_FOLDER, job_title)
     result = torch.load(str(result_path)+'/results.pt')
-    
     cell_type_31 = {'Glut': 0, 'CP': 1, 'DN': 2, 'FB_OCR': 3,
-                 'GA': 4, 'GZ': 5, 'FB_H3K27ac': 6, 'iPS': 7,
-                 'NPC': 8, 'ACC_neuron': 9, 'AMY_neuron': 10, 'DLPFC_neuron': 11,
-                 'HIPP_neuron': 12, 'INS_neuron': 13, 'ITC_neuron': 14, 'MDT_neuron': 15,
-                 'NAC_neuron': 16, 'OFC_neuron': 17, 'PMC_neuron': 18, 'PUT_neuron': 19,
-                 'PVC_neuron': 20, 'STC_neuron': 21, 'VLPFC_neuron': 22, 'PEC_Enhancers':23,
-                 'PEC_OCR':24, 'Organoid_0':25, 'Organoid_11':26, 'Organoid_30':27, 'PFC_H3K27ac':28,
-                 'TC_H3K27ac':29, 'CBC_H3K27ac':30}
+                    'GA': 4, 'GZ': 5, 'FB_H3K27ac': 6, 'iPS': 7,
+                    'NPC': 8, 'ACC_neuron': 9, 'AMY_neuron': 10,
+                    'DLPFC_neuron': 11, 'HIPP_neuron': 12, 'INS_neuron': 13,
+                    'ITC_neuron': 14, 'MDT_neuron': 15, 'NAC_neuron': 16,
+                    'OFC_neuron': 17, 'PMC_neuron': 18, 'PUT_neuron': 19,
+                    'PVC_neuron': 20, 'STC_neuron': 21, 'VLPFC_neuron': 22,
+                    'PEC_Enhancers': 23, 'PEC_OCR': 24, 'Organoid_0': 25,
+                    'Organoid_11': 26, 'Organoid_30': 27, 'PFC_H3K27ac': 28,
+                    'TC_H3K27ac': 29, 'CBC_H3K27ac': 30}
     content = dict()
     for item in result.items():
         abs_diff = []
@@ -129,7 +131,6 @@ def get_result(job_title):
             num = "{:.3e}".format(num)
             abs_diff.append(num)
         content[item[0]] = abs_diff
-    
     unmatch = []
     if os.path.isfile(os.path.join(input_path, 'unmatch.txt')):
         unmatch_file = open(os.path.join(input_path, 'unmatch.txt'), 'r')
