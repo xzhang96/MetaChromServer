@@ -1,2 +1,6 @@
-# Folder for input data
 /inputData/*
+/results/*
+/.vscode
+/.vscode/*
+/__pycache__
+/__pycache__/*
