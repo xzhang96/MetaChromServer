@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory, session
 from werkzeug.utils import secure_filename
 import time
 import pathlib
@@ -7,12 +7,15 @@ import re
 import torch
 import json
 from numpyencoder import NumpyEncoder
+import csv
+import tarfile
 
 app = Flask(__name__)
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(APP_ROOT, 'inputData/')
 RESULT_FOLDER = os.path.join(APP_ROOT, 'results/')
 app.config['UPLOAD_EXT'] = ['.txt', '.vcf']
+app.secret_key = b'\xb7\xb9\xfa\xc559\r\xba}\xea\x8b\xaai\x1c\x12\x03'
 
 
 @app.route('/')
@@ -61,7 +64,6 @@ def get_info():
                 error = "Paste text format error"
                 return render_template('homepage.html', error=error)
         result_dir = pathlib.Path(RESULT_FOLDER, jobTitle)
-        # render_template('loader.html')
         status = process_var_data(jobTitle, request.form['selectVar'],
                                   str(new_dir), result_dir)
         if status is not None:
@@ -109,8 +111,8 @@ def validate_var_paste_text(input, var_type):
 
 
 @app.route('/result')
-def get_result():
-    job_title = '1600408821.0151312_three'
+def get_result(job_title):
+    # job_title = '1600750941.6900382_two'
     result_path = os.path.join(RESULT_FOLDER, job_title)
     input_path = os.path.join(UPLOAD_FOLDER, job_title)
     result = torch.load(str(result_path)+'/results.pt')
@@ -124,6 +126,10 @@ def get_result():
                     'PEC_Enhancers': 23, 'PEC_OCR': 24, 'Organoid_0': 25,
                     'Organoid_11': 26, 'Organoid_30': 27, 'PFC_H3K27ac': 28,
                     'TC_H3K27ac': 29, 'CBC_H3K27ac': 30}
+    csv_header = ['Id', 'Chr', 'Pos', 'Ref', 'Alt']
+    for item in cell_type_31.keys():
+        csv_header.append(item)
+
     content = dict()
     for item in result.items():
         abs_diff = []
@@ -137,11 +143,40 @@ def get_result():
         for line in unmatch_file:
             unmatch.append(line.strip())
 
+    with open(str(result_path) + '/abs_diff.csv', 'w') as csvfile:
+        csv.writer(csvfile).writerow(csv_header)
+    with open(str(result_path) + '/ref_prob.csv', 'w') as csvfile:
+        csv.writer(csvfile).writerow(csv_header)
+    with open(str(result_path) + '/alt_prob.csv', 'w') as csvfile:
+        csv.writer(csvfile).writerow(csv_header)
+
+    for item in result.items():
+        info = item[0].split(';')
+
+        with open(str(result_path) + '/abs_diff.csv', 'a') as csvfile:
+            csv.writer(csvfile).writerow(info + item[1].get('abs_diff').tolist())
+        with open(str(result_path) + '/ref_prob.csv', 'a') as csvfile:
+            csv.writer(csvfile).writerow(info + item[1].get('ref_prob').tolist())
+        with open(str(result_path) + '/alt_prob.csv', 'a') as csvfile:
+            csv.writer(csvfile).writerow(info + item[1].get('alt_prob').tolist())
+    
+    with tarfile.open('results/'+job_title+'/results.tar.gz', 'w:gz') as tar:
+        tar.add(str(result_path)+'/abs_diff.csv', arcname='abs_diff.csv')
+        tar.add(str(result_path)+'/ref_prob.csv', arcname='ref_prob.csv')
+        tar.add(str(result_path)+'/alt_prob.csv', arcname='alt_prob.csv')
+
+    session['job_title'] = job_title
     cleanupCommand = 'rm -R ' + input_path
     os.system(cleanupCommand)
     return render_template('result.html', result=content,
                            cell_type=cell_type_31, unmatch=unmatch)
 
+
+@app.route('/download')
+def download():
+    job_title = session.get('job_title', None)
+    filename = job_title + '/results.tar.gz'
+    return send_from_directory('results', filename, as_attachment=True)
 
 if __name__ == '__main__':
     app.run(debug=True, port=5050)
