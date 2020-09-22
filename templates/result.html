@@ -47,12 +47,13 @@
                     {% endfor %}
                     </div>
                 {% endif %}
+                <div style="text-align:right;"><a href="/download">Download Results</a></div>
                 <br>
                 <div class="table-responsive">
                 <table id="result" class="table table-hover" style="width: 100%;">
                     <thead>
                     <tr>
-                        <th>id</th>
+                        <th>Id</th>
                         <th>Chr</th>
                         <th>Position</th>
                         <th>Ref</th>
@@ -65,11 +66,11 @@
                     <tbody>
                     {% for key, value in result.items() %}
                         <tr>
-                            <td>{{ key.split(';')[0] }}</td>
-                            <td>{{ key.split(';')[3] }}</td>
-                            <td>{{ key.split(';')[4] }}</td>
+                            <td><strong>{{ key.split(';')[0] }}</strong></td>
                             <td>{{ key.split(';')[1] }}</td>
                             <td>{{ key.split(';')[2] }}</td>
+                            <td>{{ key.split(';')[3] }}</td>
+                            <td>{{ key.split(';')[4] }}</td>
                             {% for item in value %}
                                 <td>{{ item }}</td>
                             {% endfor %}
